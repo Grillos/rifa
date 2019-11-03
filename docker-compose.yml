@@ -1,0 +1,28 @@
+version: '3'
+volumes:
+  dados:
+networks: 
+  dados:
+  worker:
+  proxy:
+services:
+  db: 
+    image: mongo:3.4
+    volumes: 
+      - dados:/var/lib/mongo/data
+    networks: 
+      - dados
+  backend: 
+    build: ./backend
+    volumes: 
+      - ./backend:/backend
+      - /backend/node_modules
+    ports: 
+      - 3001:3001
+    command: npm start
+    networks: 
+      - proxy
+      - worker
+      - dados
+    depends_on: 
+      - db
